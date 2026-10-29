@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro';
+import Pic from '../components/Pic.astro';
+import FaqList from '../components/FaqList.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { APPLICATIONS } from '../data/applications';
+import { SITE } from '../data/site';
+
+const faq = [
+  { q: 'O que é uma estrutura metálica pré-fabricada?', a: 'É uma estrutura em que as peças de aço são fabricadas previamente em fábrica e montadas no local da obra. Isso traz agilidade, precisão e qualidade ao resultado final.' },
+  { q: 'Quais obras podem usar estrutura metálica?', a: 'Galpões, mezaninos, ginásios, edifícios, obras industriais, logísticas e comerciais. O projeto é sempre personalizado.' },
+  { q: 'Qual o maior vão livre que a Galfort atende?', a: `Vãos livres de até ${SITE.maxSpanMeters} metros, conforme o projeto.` },
+  { q: 'Quem deve projetar a estrutura?', a: 'Um profissional habilitado, seguindo as normas técnicas brasileiras. A Galfort orienta cada cliente conforme o tipo de obra.' },
+  { q: 'Como peço um orçamento?', a: 'Pelo WhatsApp (11) 94071-9907. Informe o tipo de obra, as medidas aproximadas e a cidade.' },
+];
+
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+<Base
+  title="O que é Estrutura Metálica Pré-Fabricada? | Galfort"
+  description="Entenda o que é estrutura metálica pré-fabricada, como funciona, vantagens e onde usar: galpões, mezaninos, ginásios e edifícios. Guia da Galfort."
+  path="/estrutura-metalica-pre-fabricada/"
+  solidHeader
+  breadcrumbs={[{ name: 'Início', path: '/' }, { name: 'Estrutura metálica pré-fabricada', path: '/estrutura-metalica-pre-fabricada/' }]}
+  schema={[faqSchema]}
+>
+  <section class="cta-band" style="text-align:left">
+    <div class="container prose">
+      <h1>Estrutura metálica pré-fabricada: o que é e quando usar</h1>
+      <p>Um guia direto da Galfort, com mais de {SITE.years} anos de atuação em estruturas metálicas pré-fabricadas.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container about">
+      <div class="prose">
+        <h2>O que é estrutura metálica pré-fabricada</h2>
+        <p>Os componentes de aço são fabricados previamente em fábricas e montados no local da obra. Esse método garante agilidade no processo, além de maior precisão e qualidade no resultado final.</p>
+        <p>As estruturas metálicas são versáteis. Servem para galpões, edifícios e muitos outros projetos. O aço também é reciclável.</p>
+      </div>
+      <div class="about__img"><Pic src="images/estrutura_metalica.webp" alt="Estrutura metálica de aço contra o céu azul" widths={[480, 800]} sizes="(min-width: 800px) 540px, 100vw" /></div>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="container prose">
+      <h2>Como funciona, da ideia à montagem</h2>
+      <p>O caminho costuma seguir quatro etapas gerais. Cada obra tem detalhes próprios.</p>
+      <ol>
+        <li><strong>Briefing:</strong> uso do espaço, medidas, cargas e local.</li>
+        <li><strong>Projeto:</strong> definição da estrutura sob medida.</li>
+        <li><strong>Fabricação:</strong> peças produzidas previamente em fábrica.</li>
+        <li><strong>Montagem:</strong> instalação no local da obra.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container prose">
+      <h2>Vantagens da estrutura metálica</h2>
+      <ul>
+        <li><strong>Agilidade:</strong> peças prontas aceleram a montagem.</li>
+        <li><strong>Precisão:</strong> fabricação prévia favorece a qualidade.</li>
+        <li><strong>Vãos livres:</strong> até {SITE.maxSpanMeters} metros em projetos da Galfort.</li>
+        <li><strong>Versatilidade:</strong> serve a vários setores.</li>
+        <li><strong>Sustentabilidade:</strong> o aço é reciclável.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="container">
+      <h2>Onde usar</h2>
+      <div class="cards">
+        {APPLICATIONS.map((a) => (
+          <a class="card" href={`/estruturas-metalicas/${a.slug}/`}><strong>{a.label}</strong>{a.h1}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <FaqList items={faq} />
+  <CtaBand />
+</Base>

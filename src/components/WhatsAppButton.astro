@@ -1,0 +1,9 @@
+---
+import Icon from './Icon.astro';
+import { whatsappLink } from '../data/site';
+interface Props { label?: string; message?: string; track?: string }
+const { label = 'Fale conosco', message, track = 'whatsapp_cta' } = Astro.props;
+---
+<a class="btn" href={whatsappLink(message)} target="_blank" rel="noopener" data-track={track}>
+  <Icon name="whatsapp" size={24} /> {label}
+</a>

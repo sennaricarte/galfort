@@ -1,0 +1,80 @@
+---
+import Base from '../../layouts/Base.astro';
+import FaqList from '../../components/FaqList.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import { APPLICATIONS, bySlug } from '../../data/applications';
+import { SITE } from '../../data/site';
+
+export function getStaticPaths() {
+  return APPLICATIONS.map((a) => ({ params: { slug: a.slug }, props: { slug: a.slug } }));
+}
+const { slug } = Astro.props;
+const app = bySlug(slug);
+const path = `/estruturas-metalicas/${app.slug}/`;
+const related = app.related.map(bySlug);
+
+const schema = [
+  {
+    '@type': 'Service',
+    '@id': `${SITE.url}${path}#service`,
+    name: app.h1,
+    serviceType: app.label,
+    description: app.metaDescription,
+    provider: { '@id': `${SITE.url}/#organization` },
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: app.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+<Base
+  title={app.metaTitle}
+  description={app.metaDescription}
+  path={path}
+  solidHeader
+  schema={schema}
+  breadcrumbs={[
+    { name: 'Início', path: '/' },
+    { name: 'Estruturas metálicas', path: '/estruturas-metalicas/' },
+    { name: app.label, path },
+  ]}
+>
+  <section class="cta-band" style="text-align:left">
+    <div class="container prose">
+      <p class="breadcrumbs"><a href="/">Início</a> › <a href="/estruturas-metalicas/">Estruturas metálicas</a> › {app.label}</p>
+      <h1>{app.h1}</h1>
+      <p>{app.lead}</p>
+      <WhatsAppButton label="Solicitar orçamento" message={`Olá! Vim pelo site da Galfort e gostaria de um orçamento para ${app.label.toLowerCase()} em estrutura metálica.`} track={`whatsapp_${app.slug}`} />
+    </div>
+  </section>
+
+  {app.sections.map((s, i) => (
+    <section class={`section${i % 2 ? ' section--soft' : ''}`}>
+      <div class="container prose">
+        <h2>{s.h2}</h2>
+        {s.p.map((t) => <p>{t}</p>)}
+      </div>
+    </section>
+  ))}
+
+  <section class="section">
+    <div class="container prose">
+      <p>Veja obras reais na <a href="/galeria/">galeria de projetos</a> ou entenda <a href="/estrutura-metalica-pre-fabricada/">como funciona a estrutura metálica pré-fabricada</a>.</p>
+    </div>
+  </section>
+
+  <FaqList items={app.faq} />
+
+  <section class="section section--soft">
+    <div class="container">
+      <h2>Outras aplicações</h2>
+      <div class="cards">
+        {related.map((r) => <a class="card" href={`/estruturas-metalicas/${r.slug}/`}><strong>{r.label}</strong>{r.lead}</a>)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>

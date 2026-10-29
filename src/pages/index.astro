@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import Pic from '../components/Pic.astro';
+import Icon from '../components/Icon.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { SITE } from '../data/site';
+import { CLIENTS } from '../data/clients';
+import { HOME_PHOTOS, photoAlt } from '../data/gallery';
+import { APPLICATIONS } from '../data/applications';
+
+const VIDEO_ID = 'ewUoy47YbhU';
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent('Av. da Aclimação, 385, Aclimação, São Paulo - SP, 01531-001')}&output=embed`;
+---
+<Base
+  title="Estruturas Metálicas Pré-Fabricadas em São Paulo | Galfort"
+  description="Estruturas metálicas pré-fabricadas para galpões, mezaninos, ginásios e edifícios. Vãos livres de até 50 m e +40 anos de experiência. Peça orçamento."
+  path="/"
+>
+  <section class="hero" aria-labelledby="hero-title">
+    <Pic src="backgrounds/inicio.webp" alt="" class="hero__bg" widths={[640, 1024, 1600]} sizes="100vw" priority quality={65} />
+    <div class="container">
+      <div class="hero__content">
+        <h1 id="hero-title">Estruturas Metálicas Pré-Fabricadas</h1>
+        <p>Com mais de {SITE.years} anos de experiência, oferecemos soluções em estruturas metálicas pré-fabricadas para diversos setores, garantindo projetos personalizados, duráveis e de alta qualidade.</p>
+        <p class="hero__sectors">Industrial - Logística - Comercial - Ginásios - Mezaninos - Edifícios</p>
+        <p class="hero__span">Vãos livres de até {SITE.maxSpanMeters} metros</p>
+        <WhatsAppButton label="Fale conosco" track="whatsapp_hero" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="sobre-nos" aria-labelledby="oque-e">
+    <div class="container about">
+      <div id="estrutura-metalica">
+        <h2 id="oque-e">O que é estrutura metálica?</h2>
+        <p>Estrutura metálica pré-fabricada é um tipo de construção onde os componentes de aço são fabricados previamente em fábricas e montados no local da obra. Esse método garante agilidade no processo, além de maior precisão e qualidade no resultado final.</p>
+        <p>Além da rapidez, as estruturas metálicas são versáteis e podem ser usadas em diferentes tipos de projetos, como galpões e edifícios. O aço também é reciclável, tornando essa opção mais sustentável e eficiente.</p>
+        <p><a href="/estrutura-metalica-pre-fabricada/">Entenda como funciona a estrutura metálica pré-fabricada</a></p>
+      </div>
+      <div class="about__img">
+        <Pic src="images/estrutura_metalica.webp" alt="Estrutura metálica de aço contra o céu azul" widths={[480, 800, 1100]} sizes="(min-width: 800px) 540px, 100vw" />
+      </div>
+    </div>
+  </section>
+
+  <section class="features" aria-label="Diferenciais da Galfort">
+    <div class="container features__grid">
+      <div>
+        <div class="features__icon"><Icon name="anos" /></div>
+        <h2>+{SITE.years} anos</h2>
+        <p>Atuação sólida no mercado de estruturas metálicas pré-fabricadas.</p>
+      </div>
+      <div>
+        <div class="features__icon"><Icon name="personalizado" /></div>
+        <h2>Soluções Personalizadas</h2>
+        <p>Projetos feitos sob medida para atender às necessidades de cada cliente.</p>
+      </div>
+      <div>
+        <div class="features__icon"><Icon name="durabilidade" /></div>
+        <h2>Alta durabilidade</h2>
+        <p>Estruturas projetadas com tecnologia de ponta para garantir qualidade e resistência.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="setores">
+    <div class="container split">
+      <div class="video" id="video-box" data-id={VIDEO_ID}>
+        <button type="button" aria-label="Reproduzir vídeo da Galfort">
+          <img src={`https://img.youtube.com/vi/${VIDEO_ID}/hqdefault.jpg`} alt="Vídeo de apresentação de projeto de estrutura metálica da Galfort" width="480" height="360" loading="lazy" decoding="async" />
+          <span class="play"></span>
+        </button>
+      </div>
+      <div>
+        <h2 id="setores">Aplicações versáteis de estruturas metálicas em diferentes setores</h2>
+        <p class="sectors">
+          {APPLICATIONS.map((a, i) => (<><a href={`/estruturas-metalicas/${a.slug}/`}>{a.label}</a>{i < APPLICATIONS.length - 1 ? ' - ' : ''}</>))}
+        </p>
+        <p class="span">Vãos livres de até {SITE.maxSpanMeters} metros</p>
+        <WhatsAppButton label="Fale conosco" track="whatsapp_setores" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--soft center" id="estruturas-pre-fabricadas" aria-labelledby="pre-fab">
+    <div class="container">
+      <h2 id="pre-fab">Estruturas Pré-Fabricadas</h2>
+      <p class="lead">Nossas estruturas pré-fabricadas são ideais para diversos setores, oferecendo soluções eficientes e duráveis para indústrias, ginásios, supermercados e muito mais.</p>
+      <div class="photo-grid">
+        {HOME_PHOTOS.map((n) => <Pic src={`trabalhos/${n}.webp`} alt={photoAlt(n)} />)}
+      </div>
+      <p><a href="/galeria/">Veja a galeria completa de obras</a></p>
+      <WhatsAppButton label="Solicitar orçamento" track="whatsapp_prefab" />
+    </div>
+  </section>
+
+  <section class="section" id="fale-conosco" aria-labelledby="contato-h">
+    <div class="container contact">
+      <div>
+        <h2 id="contato-h">Fale Conosco</h2>
+        <ContactForm />
+      </div>
+      <div>
+        <address class="nap">{SITE.address.street} – {SITE.address.neighborhood}, {SITE.address.city}/{SITE.address.region} – CEP {SITE.address.postalCode}<br />Telefone e WhatsApp: <a href={`tel:${SITE.phoneE164}`}>{SITE.phoneDisplay}</a></address>
+        <iframe class="map" title="Mapa: escritório da Galfort na Av. da Aclimação, 385, São Paulo" src={mapSrc} loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section class="section center" aria-labelledby="clientes">
+    <div class="container">
+      <h2 id="clientes">Alguns clientes Galfort</h2>
+      <ul class="clients" style="list-style:none;padding:0">
+        {CLIENTS.map((c) => <li><Pic src={`empresas/${c.file}`} alt={`Logo ${c.name}`} widths={[160, 320]} sizes="160px" /></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Facade do YouTube: o iframe (pesado) só carrega após o clique.
+  const box = document.getElementById('video-box');
+  box?.querySelector('button')?.addEventListener('click', () => {
+    const f = document.createElement('iframe');
+    f.src = `https://www.youtube-nocookie.com/embed/${box.dataset.id}?autoplay=1`;
+    f.title = 'Vídeo de apresentação da Galfort';
+    f.allow = 'autoplay; encrypted-media; picture-in-picture';
+    f.allowFullscreen = true;
+    box.replaceChildren(f);
+  }, { once: true });
+</script>

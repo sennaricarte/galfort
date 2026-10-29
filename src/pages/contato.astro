@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactForm from '../components/ContactForm.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { SITE } from '../data/site';
+
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent('Av. da Aclimação, 385, Aclimação, São Paulo - SP, 01531-001')}&output=embed`;
+---
+<Base
+  title="Contato e Orçamento de Estrutura Metálica | Galfort"
+  description="Fale com a Galfort: WhatsApp (11) 94071-9907 e escritório na Av. da Aclimação, 385, São Paulo. Peça orçamento de estrutura metálica pré-fabricada."
+  path="/contato/"
+  pageType="ContactPage"
+  solidHeader
+  breadcrumbs={[{ name: 'Início', path: '/' }, { name: 'Contato', path: '/contato/' }]}
+>
+  <section class="section">
+    <div class="container contact">
+      <div>
+        <h1 style="color:var(--navy);font-size:2.4rem">Fale Conosco</h1>
+        <p>Conte o que você precisa: tipo de obra, medidas aproximadas e cidade. Respondemos pelo WhatsApp.</p>
+        <p><WhatsAppButton label="Chamar no WhatsApp" track="whatsapp_contato" /></p>
+        <ContactForm />
+      </div>
+      <div>
+        <h2 style="font-size:1.5rem">Localização</h2>
+        <address class="nap">{SITE.address.street}<br />{SITE.address.neighborhood} – {SITE.address.city}/{SITE.address.region}<br />CEP {SITE.address.postalCode}<br />Telefone e WhatsApp: <a href={`tel:${SITE.phoneE164}`}>{SITE.phoneDisplay}</a></address>
+        <iframe class="map" title="Mapa: escritório da Galfort na Av. da Aclimação, 385, São Paulo" src={mapSrc} loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+</Base>

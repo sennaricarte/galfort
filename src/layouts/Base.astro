@@ -1,0 +1,147 @@
+---
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { SITE } from '../data/site';
+import { asset } from '../lib/images';
+import { isIndexable } from '../../seo.config.mjs';
+
+interface Crumb { name: string; path: string }
+interface Props {
+  title: string;
+  description: string;
+  path: string;                 // caminho canônico com barra final, ex.: '/galeria/'
+  solidHeader?: boolean;        // true em páginas sem hero escuro
+  breadcrumbs?: Crumb[];
+  schema?: Record<string, unknown>[];
+  ogImage?: string;             // caminho em src/assets
+  pageType?: 'WebPage' | 'CollectionPage' | 'AboutPage' | 'ContactPage';
+}
+const { title, description, path, solidHeader = false, breadcrumbs = [], schema = [], ogImage = 'backgrounds/inicio.webp', pageType = 'WebPage' } = Astro.props;
+
+const canonical = new URL(path, SITE.url).href;
+const indexable = isIndexable(path);
+const a = SITE.address;
+
+const abs = async (p: string, w: number, h?: number, fmt: 'jpeg' | 'png' = 'jpeg') => {
+  const img = asset(p);
+  if (!img) return undefined;
+  const out = await getImage({ src: img, width: w, height: h, format: fmt });
+  return new URL(out.src, SITE.url).href;
+};
+const og = await abs(ogImage, 1200, 630);
+const logo = await abs('logo/logo_galfort.webp', 512, undefined, 'png');
+
+const orgId = `${SITE.url}/#organization`;
+const graph: Record<string, unknown>[] = [
+  {
+    '@type': ['Organization', 'LocalBusiness'],
+    '@id': orgId,
+    name: SITE.name,
+    description: 'Estruturas metálicas pré-fabricadas para indústrias, logística, comércio, ginásios, mezaninos e edifícios.',
+    url: SITE.url,
+    telephone: SITE.phoneE164,
+    ...(logo ? { logo, image: logo } : {}),
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: a.street,
+      addressLocality: a.city,
+      addressRegion: a.region,
+      postalCode: a.postalCode,
+      addressCountry: a.country,
+    },
+  },
+  {
+    '@type': 'WebSite',
+    '@id': `${SITE.url}/#website`,
+    url: SITE.url,
+    name: SITE.name,
+    inLanguage: SITE.locale,
+    publisher: { '@id': orgId },
+  },
+  {
+    '@type': pageType,
+    '@id': `${canonical}#webpage`,
+    url: canonical,
+    name: title,
+    description,
+    inLanguage: SITE.locale,
+    isPartOf: { '@id': `${SITE.url}/#website` },
+    about: { '@id': orgId },
+  },
+  ...(breadcrumbs.length
+    ? [{
+        '@type': 'BreadcrumbList',
+        '@id': `${canonical}#breadcrumb`,
+        itemListElement: breadcrumbs.map((c, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: c.name,
+          item: new URL(c.path, SITE.url).href,
+        })),
+      }]
+    : []),
+  ...schema,
+];
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
+const gaId = import.meta.env.PUBLIC_GA_ID as string | undefined;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={indexable ? 'index,follow,max-image-preview:large,max-snippet:-1' : 'noindex,follow'} />
+    <meta name="theme-color" content="#104380" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {og && <meta property="og:image" content={og} />}
+    {og && <meta property="og:image:width" content="1200" />}
+    {og && <meta property="og:image:height" content="630" />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {og && <meta name="twitter:image" content={og} />}
+
+    <script type="application/ld+json" set:html={jsonLd} />
+    {gaId && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>}
+    {gaId && (
+      <script is:inline define:vars={{ gaId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', gaId);
+      </script>
+    )}
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+    <Header solid={solidHeader} />
+    <main id="conteudo" class={solidHeader ? 'has-solid-header' : ''}>
+      <slot />
+    </main>
+    <Footer />
+    <WhatsAppFloat />
+    <script>
+      // Rastreia cliques de WhatsApp (GA4, se configurado).
+      document.addEventListener('click', (e) => {
+        const el = (e.target as HTMLElement).closest<HTMLElement>('[data-track]');
+        if (!el) return;
+        (window as any).gtag?.('event', 'generate_lead', { method: el.dataset.track, link_url: (el as HTMLAnchorElement).href });
+      });
+    </script>
+  </body>
+</html>

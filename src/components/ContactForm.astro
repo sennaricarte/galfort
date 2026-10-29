@@ -1,0 +1,31 @@
+---
+import Icon from './Icon.astro';
+import { SITE } from '../data/site';
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined;
+---
+<form id="contact-form" method="post" action={endpoint || undefined} data-wa={SITE.whatsappNumber} data-endpoint={endpoint ? 'yes' : 'no'}>
+  <div class="field"><label for="nome">Nome completo</label><input id="nome" name="nome" type="text" autocomplete="name" required /></div>
+  <div class="field"><label for="telefone">Telefone</label><input id="telefone" name="telefone" type="tel" autocomplete="tel" required /></div>
+  <div class="field"><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" /></div>
+  <div class="field"><label for="mensagem">Mensagem</label><textarea id="mensagem" name="mensagem" required></textarea></div>
+  <button class="btn" type="submit">Enviar mensagem <Icon name="arrow" size={20} /></button>
+  {!endpoint && <p class="form-note">Ao enviar, abriremos o WhatsApp com a sua mensagem pronta.</p>}
+</form>
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  if (form && form.dataset.endpoint === 'no') {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const d = new FormData(form);
+      const text = [
+        'Olá! Vim pelo site da Galfort.',
+        `Nome: ${d.get('nome')}`,
+        `Telefone: ${d.get('telefone')}`,
+        d.get('email') ? `E-mail: ${d.get('email')}` : '',
+        `Mensagem: ${d.get('mensagem')}`,
+      ].filter(Boolean).join('\n');
+      (window as any).gtag?.('event', 'generate_lead', { method: 'form_whatsapp' });
+      window.open(`https://wa.me/${form.dataset.wa}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    });
+  }
+</script>

@@ -1,0 +1,36 @@
+---
+import Pic from './Pic.astro';
+import { NAV, SITE } from '../data/site';
+interface Props { solid?: boolean }
+const { solid = false } = Astro.props;
+const current = Astro.url.pathname;
+---
+<header class={`header${solid ? ' is-solid' : ''}`} id="top-header" data-solid={solid ? 'true' : 'false'}>
+  <div class="container bar">
+    <a class="logo" href="/" aria-label={`${SITE.name}: página inicial`}>
+      <Pic src="logo/logo_galfort.webp" alt={`Logo ${SITE.name} ${SITE.legalTagline}`} widths={[160, 320]} sizes="160px" eager />
+    </a>
+    <button class="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu"><span></span><span></span><span></span></button>
+    <nav id="menu" aria-label="Principal">
+      <ul>
+        {NAV.map((i) => (
+          <li><a href={i.href} aria-current={current === i.href ? 'page' : undefined}>{i.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+<script>
+  const h = document.getElementById('top-header')!;
+  const btn = h.querySelector<HTMLButtonElement>('.menu-btn')!;
+  const nav = h.querySelector('nav')!;
+  const fixed = h.dataset.solid === 'true';
+  const onScroll = () => h.classList.toggle('is-solid', fixed || window.scrollY > 40);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  btn.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(open));
+    h.classList.add('is-solid');
+  });
+</script>

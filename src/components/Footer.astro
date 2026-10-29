@@ -1,0 +1,29 @@
+---
+import Pic from './Pic.astro';
+import Icon from './Icon.astro';
+import { SITE, NAV } from '../data/site';
+const a = SITE.address;
+---
+<footer class="footer">
+  <div class="container footer__grid">
+    <div>
+      <a class="logo" href="/"><Pic src="logo/logo_galfort.webp" alt={`Logo ${SITE.name}`} widths={[160, 320]} sizes="160px" /></a>
+      <p>A Galfort é uma referência em estruturas metálicas pré-fabricadas, com mais de {SITE.years} anos de experiência, oferecendo soluções personalizadas e de qualidade.</p>
+      <!-- Redes sociais: adicione os links reais e descomente. O site original tinha href="#". -->
+    </div>
+    <nav aria-label="Rodapé">
+      <h2>Navegação</h2>
+      <ul>
+        {NAV.map((i) => <li><a href={i.href}>{i.label}</a></li>)}
+      </ul>
+    </nav>
+    <div>
+      <h2>Localização</h2>
+      <address class="nap" style="color:#fff">
+        {a.street}<br />{a.neighborhood} – {a.city}/{a.region}<br />CEP {a.postalCode}
+      </address>
+      <a class="tel" href={`tel:${SITE.phoneE164}`}><Icon name="phone" size={22} /> {SITE.phoneDisplay}</a>
+    </div>
+  </div>
+  <p class="footer__copy">© {new Date().getFullYear()} {SITE.name} – {SITE.legalTagline}. Todos os direitos reservados.</p>
+</footer>

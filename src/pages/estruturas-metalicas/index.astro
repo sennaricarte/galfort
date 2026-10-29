@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { APPLICATIONS } from '../../data/applications';
+import { SITE } from '../../data/site';
+---
+<Base
+  title="Estruturas Metálicas por Aplicação | Galfort"
+  description="Galpões, mezaninos, ginásios, edifícios e obras industriais, logísticas e comerciais em estrutura metálica pré-fabricada. Conheça as aplicações da Galfort."
+  path="/estruturas-metalicas/"
+  pageType="CollectionPage"
+  solidHeader
+  breadcrumbs={[{ name: 'Início', path: '/' }, { name: 'Estruturas metálicas', path: '/estruturas-metalicas/' }]}
+>
+  <section class="cta-band" style="text-align:left">
+    <div class="container">
+      <h1>Estruturas metálicas por aplicação</h1>
+      <p>Projetos personalizados, vãos livres de até {SITE.maxSpanMeters} metros e mais de {SITE.years} anos de experiência.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="cards">
+        {APPLICATIONS.map((a) => (
+          <a class="card" href={`/estruturas-metalicas/${a.slug}/`}><strong>{a.label}</strong>{a.lead}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CtaBand />
+</Base>

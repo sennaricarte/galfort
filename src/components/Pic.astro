@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import { asset } from '../lib/images';
+
+interface Props {
+  src: string;            // caminho relativo a src/assets, ex.: 'trabalhos/12.webp'
+  alt: string;
+  widths?: number[];
+  sizes?: string;
+  priority?: boolean;     // true só para a imagem do LCP (eager + fetchpriority high)
+  eager?: boolean;        // acima da dobra, mas não é o LCP (ex.: logo): eager sem fetchpriority
+  class?: string;
+  quality?: number;
+}
+const { src, alt, widths = [400, 800, 1200], sizes = '(min-width: 1140px) 360px, 100vw', priority = false, eager = false, class: cls, quality = 70 } = Astro.props;
+const img = asset(src);
+---
+{img ? (
+  <Image
+    src={img}
+    alt={alt}
+    widths={widths}
+    sizes={sizes}
+    quality={quality}
+    class={cls}
+    loading={priority || eager ? 'eager' : 'lazy'}
+    fetchpriority={priority ? 'high' : 'auto'}
+    decoding={priority ? 'sync' : 'async'}
+  />
+) : (
+  <div class="ph" role="img" aria-label={alt} data-missing={src}></div>
+)}

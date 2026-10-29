@@ -1,0 +1,7 @@
+---
+import Icon from './Icon.astro';
+import { whatsappLink } from '../data/site';
+---
+<a class="wa-float" href={whatsappLink()} target="_blank" rel="noopener" aria-label="Falar com a Galfort no WhatsApp" data-track="whatsapp_float">
+  <Icon name="whatsapp" size={32} />
+</a>

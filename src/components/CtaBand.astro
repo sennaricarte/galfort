@@ -1,0 +1,12 @@
+---
+import WhatsAppButton from './WhatsAppButton.astro';
+interface Props { title?: string; text?: string; message?: string }
+const { title = 'Peça seu orçamento de estrutura metálica', text = 'Conte o que você precisa e receba orientação da equipe da Galfort pelo WhatsApp.', message } = Astro.props;
+---
+<section class="cta-band">
+  <div class="container">
+    <h2>{title}</h2>
+    <p>{text}</p>
+    <WhatsAppButton label="Solicitar orçamento" message={message} track="whatsapp_band" />
+  </div>
+</section>

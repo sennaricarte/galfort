@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import Pic from '../components/Pic.astro';
+import CtaBand from '../components/CtaBand.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { getImage } from 'astro:assets';
+import { asset } from '../lib/images';
+import { GALLERY } from '../data/gallery';
+
+const items = await Promise.all(
+  GALLERY.map(async (g) => {
+    const img = asset(`trabalhos/${g.n}.webp`);
+    const full = img ? (await getImage({ src: img, width: 1600, format: 'webp', quality: 80 })).src : '#';
+    return { ...g, full };
+  })
+);
+---
+<Base
+  title="Galeria de Obras em Estrutura Metálica | Galfort"
+  description="Galeria de obras da Galfort: estruturas metálicas pré-fabricadas para indústrias, ginásios, comércio e mais. Veja os projetos e peça orçamento."
+  path="/galeria/"
+  pageType="CollectionPage"
+  solidHeader
+  breadcrumbs={[{ name: 'Início', path: '/' }, { name: 'Galeria', path: '/galeria/' }]}
+>
+  <section class="cta-band" style="text-align:left">
+    <div class="container">
+      <h1>Nosso Portfólio de Projetos</h1>
+      <p>Explore nossa galeria de trabalhos realizados. Aqui você encontrará imagens dos projetos que desenvolvemos, mostrando a qualidade, dedicação e criatividade que colocamos em cada entrega.</p>
+      <WhatsAppButton label="Fale conosco" track="whatsapp_galeria_topo" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="gallery" id="gallery">
+        {items.map((g) => (
+          <a href={g.full} data-full={g.full} aria-label={`Ampliar imagem: ${g.alt}`}>
+            <Pic src={`trabalhos/${g.n}.webp`} alt={g.alt} widths={[320, 480, 640]} sizes="(min-width: 1140px) 270px, (min-width: 600px) 33vw, 50vw" />
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+
+  <dialog class="lightbox" id="lightbox" aria-label="Imagem ampliada">
+    <button type="button" aria-label="Fechar">×</button>
+    <img alt="Imagem ampliada" />
+  </dialog>
+</Base>
+
+<script>
+  const dlg = document.getElementById('lightbox') as HTMLDialogElement;
+  const big = dlg.querySelector('img')!;
+  document.getElementById('gallery')!.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[data-full]');
+    if (!a || a.dataset.full === '#') return;
+    e.preventDefault();
+    big.src = a.dataset.full!;
+    big.alt = a.querySelector('img')?.alt ?? 'Imagem ampliada';
+    dlg.showModal();
+  });
+  dlg.addEventListener('click', (e) => { if (e.target === dlg || (e.target as HTMLElement).tagName === 'BUTTON') dlg.close(); });
+</script>
